@@ -1,37 +1,136 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=12 format=2]
 
-[ext_resource path="res://image/buttonTexture.png" type="Texture" id=1]
-[ext_resource path="res://image/backgroung480x800.png" type="Texture" id=2]
-[ext_resource path="res://image/buttonPressTexture.png" type="Texture" id=3]
+[ext_resource path="res://assets/sprites/celula_parada/untitled_1.png" type="Texture" id=1]
+[ext_resource path="res://assets/sprites/celula_parada/untitled_5.png" type="Texture" id=2]
+[ext_resource path="res://assets/sprites/celula_parada/untitled_8.png" type="Texture" id=3]
+[ext_resource path="res://assets/sprites/celula_parada/untitled_2.png" type="Texture" id=4]
+[ext_resource path="res://assets/sprites/celula_parada/untitled_6.png" type="Texture" id=5]
+[ext_resource path="res://assets/sprites/celula_parada/untitled_4.png" type="Texture" id=6]
+[ext_resource path="res://assets/sprites/layout/label-backgroung1_480x800.png" type="Texture" id=7]
+[ext_resource path="res://assets/sprites/celula_parada/untitled_7.png" type="Texture" id=8]
+[ext_resource path="res://assets/sprites/layout/label-top1_480x80.png" type="Texture" id=9]
+[ext_resource path="res://assets/sprites/celula_parada/untitled_3.png" type="Texture" id=10]
+
+[sub_resource type="SpriteFrames" id=1]
+animations = [ {
+"frames": [ ExtResource( 1 ), ExtResource( 4 ), ExtResource( 10 ), ExtResource( 6 ), ExtResource( 2 ), ExtResource( 5 ), ExtResource( 8 ), ExtResource( 3 ) ],
+"loop": true,
+"name": "default",
+"speed": 7.0
+}, {
+"frames": [  ],
+"loop": true,
+"name": "New Anim",
+"speed": 5.0
+} ]
 
 [node name="Main" type="Node"]
 
 [node name="UI" type="CanvasLayer" parent="."]
 
 [node name="background" type="Sprite" parent="UI"]
-position = Vector2( -5.04541, -3.36359 )
-texture = ExtResource( 2 )
+position = Vector2( 1.18921, -1.18921 )
+texture = ExtResource( 7 )
 centered = false
 
-[node name="clicker" type="TextureButton" parent="UI"]
-anchor_left = 0.5
+[node name="toplabel" type="Sprite" parent="UI"]
+texture = ExtResource( 9 )
+centered = false
+
+[node name="Label" type="Label" parent="UI/toplabel"]
 anchor_top = 0.5
-anchor_right = 0.5
 anchor_bottom = 0.5
-margin_left = -50.0
-margin_top = -50.0
-margin_right = 50.0
-margin_bottom = 50.0
-texture_normal = ExtResource( 1 )
-texture_pressed = ExtResource( 3 )
+margin_top = -38.5
+margin_right = 139.0
+margin_bottom = 38.5
+text = "Player 01
+"
+align = 1
+valign = 1
+uppercase = true
+percent_visible = -0.125
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="title" type="Label" parent="UI"]
-margin_right = 40.0
-margin_bottom = 14.0
-text = "Ah mano, Mitocondria"
+[node name="TextureButton" type="TextureButton" parent="UI"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -20.0
+margin_top = -20.0
+margin_right = 20.0
+margin_bottom = 20.0
+expand = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="AnimatedSprite" type="AnimatedSprite" parent="UI/TextureButton"]
+scale = Vector2( 2.5, 2.5 )
+frames = SubResource( 1 )
+frame = 1
+playing = true
+
+[node name="labels" type="Control" parent="UI"]
+margin_top = 680.0
+margin_right = 480.0
+margin_bottom = 720.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="TimeLabel" type="Label" parent="UI/labels"]
+anchor_top = 0.5
+anchor_bottom = 0.5
+margin_top = -20.0
+margin_right = 160.0
+margin_bottom = 20.0
+text = "Tempo de vida: "
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ATPLabel" type="Label" parent="UI/labels"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -80.0
+margin_top = -20.0
+margin_right = 80.0
+margin_bottom = 20.0
+rect_pivot_offset = Vector2( 27.8913, -27.6328 )
+text = "ATP: "
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="CellsLabel" type="Label" parent="UI/labels"]
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+margin_left = -160.0
+margin_top = -20.0
+margin_bottom = 20.0
+rect_pivot_offset = Vector2( 27.8913, -27.6328 )
+text = "Celulas: "
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="buttons" type="Control" parent="UI"]
+margin_top = 720.0
+margin_right = 480.0
+margin_bottom = 800.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
