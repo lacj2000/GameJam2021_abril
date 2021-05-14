@@ -1,0 +1,32 @@
+[gd_scene load_steps=18 format=2]
+
+[ext_resource path="res://assets/sprites/celula_meiose/celula_meiose_15.png" type="Texture" id=1]
+[ext_resource path="res://assets/sprites/celula_meiose/celula_meiose_14.png" type="Texture" id=2]
+[ext_resource path="res://assets/sprites/celula_meiose/celula_meiose_6.png" type="Texture" id=3]
+[ext_resource path="res://assets/sprites/celula_meiose/celula_meiose_2.png" type="Texture" id=4]
+[ext_resource path="res://assets/sprites/celula_meiose/celula_meiose_11.png" type="Texture" id=5]
+[ext_resource path="res://assets/sprites/celula_meiose/celula_meiose_12.png" type="Texture" id=6]
+[ext_resource path="res://assets/sprites/celula_meiose/celula_meiose_16.png" type="Texture" id=7]
+[ext_resource path="res://assets/sprites/celula_meiose/celula_meiose_4.png" type="Texture" id=8]
+[ext_resource path="res://assets/sprites/celula_meiose/celula_meiose_7.png" type="Texture" id=9]
+[ext_resource path="res://assets/sprites/celula_meiose/celula_meiose_8.png" type="Texture" id=10]
+[ext_resource path="res://assets/sprites/celula_meiose/celula_meiose_10.png" type="Texture" id=11]
+[ext_resource path="res://assets/sprites/celula_meiose/celula_meiose_9.png" type="Texture" id=12]
+[ext_resource path="res://assets/sprites/celula_meiose/celula_meiose_13.png" type="Texture" id=13]
+[ext_resource path="res://assets/sprites/celula_meiose/celula_meiose_5.png" type="Texture" id=14]
+[ext_resource path="res://assets/sprites/celula_meiose/celula_meiose_3.png" type="Texture" id=15]
+[ext_resource path="res://assets/sprites/celula_meiose/celula_meiose_1.png" type="Texture" id=16]
+
+[sub_resource type="SpriteFrames" id=1]
+animations = [ {
+"frames": [ ExtResource( 16 ), ExtResource( 4 ), ExtResource( 15 ), ExtResource( 8 ), ExtResource( 14 ), ExtResource( 3 ), ExtResource( 9 ), ExtResource( 10 ), ExtResource( 12 ), ExtResource( 11 ), ExtResource( 5 ), ExtResource( 6 ), ExtResource( 13 ), ExtResource( 2 ), ExtResource( 1 ), ExtResource( 7 ) ],
+"loop": true,
+"name": "default",
+"speed": 5.0
+} ]
+
+[node name="Cell" type="Node2D"]
+
+[node name="CellAnimatedSprite" type="AnimatedSprite" parent="."]
+position = Vector2( 0, -32 )
+frames = SubResource( 1 )
