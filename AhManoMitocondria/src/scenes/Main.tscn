@@ -32,6 +32,7 @@ script/source = "extends Node
 export var ATP = 4
 export var time_life = 0
 export var quantity_cells = 1
+var auto_produce_atp_const = 1
 
 var produced_atp = 2
 
@@ -40,7 +41,12 @@ func set_labels():
 	$UI/labels/CellsLabel.text = \"Tempo de Vida: \" + str(time_life)
 	$UI/labels/TimeLabel.text = \"Celulas: \" + str(quantity_cells) 
 
+func auto_produce_atp():
+	ATP += quantity_cells * auto_produce_atp_const
 
+func increment_timer():
+	time_life = time_life + 1
+	set_labels()
 
 
 func _on_TextureButton_pressed():
@@ -83,8 +89,14 @@ func _on_celula_animation_finished():
 func _ready():
 	stop_mitose()
 	set_labels()
+	$incrementTimer.start()
 
 
+
+
+func _on_incrementTimer_timeout():
+	auto_produce_atp()
+	increment_timer()
 "
 
 [sub_resource type="SpriteFrames" id=3]
@@ -218,7 +230,7 @@ __meta__ = {
 position = Vector2( -209.321, -51.6294 )
 scale = Vector2( 2.5, 2.5 )
 frames = SubResource( 3 )
-frame = 3
+frame = 7
 playing = true
 centered = false
 
@@ -240,6 +252,9 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
+[node name="incrementTimer" type="Timer" parent="."]
+
 [connection signal="pressed" from="UI/buttons/MitoseButton" to="." method="_on_MitoseButton_pressed"]
 [connection signal="animation_finished" from="UI/Image/celula" to="." method="_on_celula_animation_finished"]
 [connection signal="pressed" from="UI/Image/TextureButton" to="." method="_on_TextureButton_pressed"]
+[connection signal="timeout" from="incrementTimer" to="." method="_on_incrementTimer_timeout"]
