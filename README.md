@@ -3,5 +3,5 @@
 
 # Componentes
 - [Jefferson da Silva Teixeira](https://github.com/jeffteixeira)
-- [Luiz Júnior](https://github.com/lacj2000)
-- [Phelyppe Matheus](https://github.com/phelyppe-matheus)
+- [Luiz Araújo da Conceição Júnior](https://github.com/lacj2000)
+- [Phelyppe Matheus Silva Da Costa](https://github.com/phelyppe-matheus)
