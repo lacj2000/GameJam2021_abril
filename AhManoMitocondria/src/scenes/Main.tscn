@@ -29,28 +29,66 @@
 [sub_resource type="GDScript" id=1]
 script/source = "extends Node
 
-export var ATP = 4
-export var time_life = 0
-export var quantity_cells = 1
-var auto_produce_atp_const = 1
+# players
+var player_name = \"pão brabo\"
+var player_cash = 100.0
 
-var produced_atp = 2
+# game
+export var ATP = 0
+export var tempo_jogo = 0
+export var quantidade_celulas = 1
+# atp 
+var const_atp_produzida = 0.5
+var bunus_atp_produzida =  0
+var tempo_bonus = 0
+var bonus_padrao =  0.0
+
+var multiplicador_atp_click = 2
+
+var velocidade_producao_atp = (const_atp_produzida + bunus_atp_produzida) * quantidade_celulas
+
+func set_velocidade_producao_atp():
+	velocidade_producao_atp = (const_atp_produzida + bunus_atp_produzida) * quantidade_celulas
+
+# celulas 
+var multiplicador_custo_mitose = 10
+var mitoses_realizadas = 0
+func get_custo_mitose():
+	# return multiplicador_custo_mitose ** mitoses_realizadas
+	pass
+
 
 func set_labels():
+	set_velocidade_producao_atp()
 	$UI/labels/ATPLabel.text = \"ATP: \" + str(ATP)
-	$UI/labels/CellsLabel.text = \"Tempo de Vida: \" + str(time_life)
-	$UI/labels/TimeLabel.text = \"Celulas: \" + str(quantity_cells) 
+	$UI/labels/CellsLabel.text = \"Tempo de Vida: \" + str(tempo_jogo)
+	$UI/labels/TimeLabel.text = \"Celulas: \" + str(quantidade_celulas) 
+	$UI/multiplicadorLabel.text = str(velocidade_producao_atp) + \" ATP/s\"  
+
 
 func auto_produce_atp():
-	ATP += quantity_cells * auto_produce_atp_const
+	if (tempo_bonus == 0):
+		bunus_atp_produzida = bonus_padrao
+	if (tempo_bonus > 0):
+		tempo_bonus -= 1 
+	ATP += quantidade_celulas * (const_atp_produzida + bunus_atp_produzida)
+
+func click_produce_atp():
+	ATP += quantidade_celulas * multiplicador_atp_click
+
+func set_buff_atp_produce(bonus, tempo):
+	bunus_atp_produzida = bonus
+	tempo_bonus = tempo
+
 
 func increment_timer():
-	time_life = time_life + 1
+	tempo_jogo = tempo_jogo + 1
 	set_labels()
 
 
+
 func _on_TextureButton_pressed():
-	ATP += quantity_cells * produced_atp
+	click_produce_atp()
 	set_labels()
 	
 	
@@ -64,7 +102,7 @@ func stop_mitose():
 	
 
 func meiose():
-	quantity_cells = quantity_cells * 2
+	quantidade_celulas = quantidade_celulas * 2
 	set_labels()
 
 func start_mitose():
@@ -99,7 +137,7 @@ func _on_incrementTimer_timeout():
 	increment_timer()
 "
 
-[sub_resource type="SpriteFrames" id=3]
+[sub_resource type="SpriteFrames" id=2]
 animations = [ {
 "frames": [ ExtResource( 14 ), ExtResource( 17 ), ExtResource( 19 ), ExtResource( 18 ), ExtResource( 16 ), ExtResource( 20 ), ExtResource( 21 ), ExtResource( 15 ), ExtResource( 22 ), ExtResource( 13 ), ExtResource( 11 ), ExtResource( 12 ), ExtResource( 24 ), ExtResource( 26 ), ExtResource( 23 ), ExtResource( 25 ) ],
 "loop": true,
@@ -107,7 +145,7 @@ animations = [ {
 "speed": 4.0
 } ]
 
-[sub_resource type="AnimatedTexture" id=2]
+[sub_resource type="AnimatedTexture" id=3]
 frames = 7
 frame_0/texture = ExtResource( 1 )
 frame_1/texture = ExtResource( 4 )
@@ -135,6 +173,17 @@ centered = false
 [node name="toplabel" type="Sprite" parent="UI"]
 texture = ExtResource( 9 )
 centered = false
+
+[node name="multiplicadorLabel" type="Label" parent="UI"]
+anchor_right = 1.0
+margin_top = 272.0
+margin_bottom = 316.0
+custom_fonts/font = ExtResource( 5 )
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="labels" type="Control" parent="UI"]
 margin_top = 680.0
@@ -229,8 +278,8 @@ __meta__ = {
 [node name="celula" type="AnimatedSprite" parent="UI/Image"]
 position = Vector2( -209.321, -51.6294 )
 scale = Vector2( 2.5, 2.5 )
-frames = SubResource( 3 )
-frame = 7
+frames = SubResource( 2 )
+frame = 3
 playing = true
 centered = false
 
@@ -247,7 +296,7 @@ grow_horizontal = 0
 grow_vertical = 0
 rect_scale = Vector2( 2.5, 2.5 )
 shortcut_in_tooltip = false
-texture_normal = SubResource( 2 )
+texture_normal = SubResource( 3 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
