@@ -1,4 +1,4 @@
-[gd_scene load_steps=31 format=2]
+[gd_scene load_steps=43 format=2]
 
 [ext_resource path="res://assets/sprites/celula_parada/untitled_1.png" type="Texture" id=1]
 [ext_resource path="res://assets/sprites/celula_parada/untitled_5.png" type="Texture" id=2]
@@ -27,33 +27,114 @@
 [ext_resource path="res://assets/sprites/celula_meiose/celula_meiose_16.png" type="Texture" id=25]
 [ext_resource path="res://assets/sprites/celula_meiose/celula_meiose_14.png" type="Texture" id=26]
 [ext_resource path="res://assets/sprites/mitosis/mitosis_button_2_1.png" type="Texture" id=27]
+[ext_resource path="res://assets/sprites/profile/profile.png" type="Texture" id=28]
+[ext_resource path="res://fonts/MotionControl-Bold-25-name.tres" type="DynamicFont" id=29]
+[ext_resource path="res://assets/sprites/coin/coin_6.png" type="Texture" id=30]
+[ext_resource path="res://assets/sprites/coin/coin_8.png" type="Texture" id=31]
+[ext_resource path="res://assets/sprites/coin/coin_7.png" type="Texture" id=32]
+[ext_resource path="res://assets/sprites/coin/coin_9.png" type="Texture" id=33]
+[ext_resource path="res://assets/sprites/coin/coin_4.png" type="Texture" id=34]
+[ext_resource path="res://assets/sprites/coin/coin_5.png" type="Texture" id=35]
+[ext_resource path="res://assets/sprites/coin/coin_1.png" type="Texture" id=36]
+[ext_resource path="res://assets/sprites/coin/coin_3.png" type="Texture" id=37]
+[ext_resource path="res://assets/sprites/coin/coin_2.png" type="Texture" id=38]
 
 [sub_resource type="GDScript" id=1]
 script/source = "extends Node
 
+var SAVEFILE = \"user://save.data1\"
+
+	
 # players
-var player_name = \"pão brabo\"
-var player_cash = 100.0
+var player_name = \"Mitosis\"
+var player_image = preload(\"res://assets/sprites/profile/profile.png\")
+var player_cash = 0.0
+
+func adicionar_cash(valor):
+	player_cash += valor 
+	set_player_labels()
+	
 
 # game
 export var ATP = 0
 export var tempo_jogo = 0
 export var quantidade_celulas = 1
 # atp 
-var const_atp_produzida = 1.0
+var producao_automatica_atp = false
+var const_atp_produzida = 0.5
 var bunus_atp_produzida =  0
 var tempo_bonus = 0
 var bonus_padrao =  0.0
 
-var multiplicador_atp_click = 2
+var multiplicador_atp_click = 0.5
 
 var velocidade_producao_atp = (const_atp_produzida + bunus_atp_produzida) * quantidade_celulas
+
+func salvar_dados():
+	var arquivo = File.new()
+	var error = arquivo.open(SAVEFILE, File.WRITE)
+	
+	var data = {
+		\"cash\":player_cash,
+		\"atp\": ATP,
+		\"tempo_jogo\": tempo_jogo,
+		\"celulas\": quantidade_celulas,
+		\"producao_automatica\": producao_automatica_atp,
+		\"constante_producao_automatica\": const_atp_produzida,
+		\"bonus_producao_automatica\": bunus_atp_produzida,
+		\"tempo_bonus\": tempo_bonus,
+		\"apt_click\": multiplicador_atp_click,
+		\"mitoses\": mitoses_realizadas,
+	}
+	
+	if not error:
+		arquivo.store_var(data)
+	else:
+		print(\"Error ao salvar dados\")
+
+
+func carregar_dados():
+	var arquivo = File.new()
+	var error = arquivo.open(SAVEFILE, File.READ)
+		
+	if not error:
+		var data = arquivo.get_var()
+		player_cash = data[\"cash\"]
+		ATP = data[\"atp\"]
+		tempo_jogo = data[\"tempo_jogo\"]
+		quantidade_celulas = data[\"celulas\"]
+		producao_automatica_atp = data[\"producao_automatica\"]
+		const_atp_produzida = data[\"constante_producao_automatica\"]
+		bunus_atp_produzida = data[\"bonus_producao_automatica\"]
+		tempo_bonus = data[\"tempo_bonus\"]
+		multiplicador_atp_click = data[\"apt_click\"]
+		mitoses_realizadas = data[\"mitoses\"]
+	else:
+		print(\"Error ao carrergar dados\")
+
+
+
+
+func adicionar_ATP(valor):
+	ATP = ATP + valor
+
+
+func subtrair_ATP(valor):
+	ATP = ATP - valor
+
+
+func ativar_producao_automatica_atp():
+	producao_automatica_atp = true
+
+func desativar_producao_automatica_atp():
+	producao_automatica_atp = false
+
 
 func set_velocidade_producao_atp():
 	velocidade_producao_atp = (const_atp_produzida + bunus_atp_produzida) * quantidade_celulas
 
 # celulas 
-var multiplicador_custo_mitose = 4
+var multiplicador_custo_mitose = 5
 var custo_mitose = 1
 var mitoses_realizadas = 0
 var botao_mitose_desabilitado = false
@@ -62,7 +143,7 @@ func set_custo_mitose():
 	custo_mitose = pow(multiplicador_custo_mitose, mitoses_realizadas)
 
 func decrementar_custo_mitose():
-	ATP = ATP - custo_mitose
+	subtrair_ATP(custo_mitose)
 	mitoses_realizadas = mitoses_realizadas + 1
 	set_custo_mitose()
 	
@@ -74,13 +155,21 @@ func set_botao_mitose():
 		botao_mitose_desabilitado = true
 
 
+func set_player_labels():
+	$UI/toplabel/PlayerImg.texture = player_image
+	$UI/toplabel/playerName.text = \"Dr. \"+ player_name
+	$UI/toplabel/playerCash.text = str(player_cash)
+
 func set_labels():
 	set_velocidade_producao_atp()
 	set_botao_mitose()
 	$UI/labels/ATPLabel.text = \"ATP\\n\" + str(ATP)
-	$UI/labels/mitoseLabel.text = \"Prox. Mitose\\n\" + str(custo_mitose) + \"atp\" 
+	$UI/labels/mitoseLabel.text = \"Prox. Mitose\\n\" + str(custo_mitose) 
 	$UI/labels/celulasLabel.text = \"Celulas\\n \" + str(quantidade_celulas) 
-	$UI/multiplicadorLabel.text = str(velocidade_producao_atp) + \" ATP/s\"  
+	if producao_automatica_atp:
+		$UI/multiplicadorLabel.text = str(velocidade_producao_atp) + \" ATP/s\"  
+	else:
+		$UI/multiplicadorLabel.text = \"\"  		
 	$UI/buttons/MitoseButton.disabled = botao_mitose_desabilitado
 
 
@@ -92,7 +181,7 @@ func auto_produce_atp():
 	ATP += quantidade_celulas * (const_atp_produzida + bunus_atp_produzida)
 
 func click_produce_atp():
-	ATP += quantidade_celulas * multiplicador_atp_click
+	adicionar_ATP(quantidade_celulas * multiplicador_atp_click)
 
 func set_buff_atp_produce(bonus, tempo):
 	bunus_atp_produzida = bonus
@@ -123,8 +212,8 @@ func meiose():
 	quantidade_celulas = quantidade_celulas * 2
 	set_labels()
 
+
 func start_mitose():
-	
 	$UI/buttons/MitoseButton.disabled = true
 	$UI/Image/TextureButton.hide()
 	$UI/Image/celula.visible = true
@@ -145,8 +234,10 @@ func _on_celula_animation_finished():
 
 
 func _ready():
+	desativar_producao_automatica_atp()
 	stop_mitose()
-	set_velocidade_producao_atp()
+	carregar_dados()
+	set_player_labels()
 	set_custo_mitose()
 	set_labels()
 	$incrementTimer.start()
@@ -155,17 +246,26 @@ func _ready():
 
 
 func _on_incrementTimer_timeout():
-
-	auto_produce_atp()
+	if producao_automatica_atp:
+		auto_produce_atp()
 	increment_timer()
+	salvar_dados()
 "
+
+[sub_resource type="SpriteFrames" id=4]
+animations = [ {
+"frames": [ ExtResource( 36 ), ExtResource( 38 ), ExtResource( 37 ), ExtResource( 34 ), ExtResource( 35 ), ExtResource( 30 ), ExtResource( 32 ), ExtResource( 31 ), ExtResource( 33 ) ],
+"loop": true,
+"name": "default",
+"speed": 4.5
+} ]
 
 [sub_resource type="SpriteFrames" id=2]
 animations = [ {
 "frames": [ ExtResource( 14 ), ExtResource( 17 ), ExtResource( 19 ), ExtResource( 18 ), ExtResource( 16 ), ExtResource( 20 ), ExtResource( 21 ), ExtResource( 15 ), ExtResource( 22 ), ExtResource( 13 ), ExtResource( 11 ), ExtResource( 12 ), ExtResource( 24 ), ExtResource( 26 ), ExtResource( 23 ), ExtResource( 25 ) ],
 "loop": true,
 "name": "default",
-"speed": 4.05
+"speed": 7.0
 } ]
 
 [sub_resource type="AnimatedTexture" id=3]
@@ -195,6 +295,43 @@ centered = false
 
 [node name="toplabel" type="Sprite" parent="UI"]
 texture = ExtResource( 9 )
+centered = false
+
+[node name="PlayerImg" type="Sprite" parent="UI/toplabel"]
+position = Vector2( 20, 10 )
+texture = ExtResource( 28 )
+centered = false
+
+[node name="playerName" type="Label" parent="UI/toplabel"]
+margin_left = 97.443
+margin_top = 15.0
+margin_right = 137.443
+margin_bottom = 52.0
+custom_fonts/font = ExtResource( 29 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="playerCash" type="Label" parent="UI/toplabel"]
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+margin_left = -65.0
+margin_top = -11.0
+margin_right = -25.0
+margin_bottom = 12.0
+custom_fonts/font = ExtResource( 5 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="AnimatedSprite" type="AnimatedSprite" parent="UI/toplabel"]
+position = Vector2( 380, 26 )
+scale = Vector2( 2, 2 )
+frames = SubResource( 4 )
+frame = 4
+playing = true
 centered = false
 
 [node name="multiplicadorLabel" type="Label" parent="UI"]
@@ -305,7 +442,7 @@ __meta__ = {
 position = Vector2( -209.321, -51.6294 )
 scale = Vector2( 2.5, 2.5 )
 frames = SubResource( 2 )
-frame = 15
+frame = 11
 playing = true
 centered = false
 
