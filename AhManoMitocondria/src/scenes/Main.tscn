@@ -28,7 +28,7 @@
 [ext_resource path="res://assets/sprites/celula_meiose/celula_meiose_14.png" type="Texture" id=26]
 [ext_resource path="res://assets/sprites/mitosis/mitosis_button_2_1.png" type="Texture" id=27]
 [ext_resource path="res://assets/sprites/layout/playerImg.png" type="Texture" id=28]
-[ext_resource path="res://src/scenes/Abertura.tscn" type="PackedScene" id=29]
+[ext_resource path="res://fonts/MotionControl-Bold-25-name.tres" type="DynamicFont" id=29]
 
 [sub_resource type="GDScript" id=1]
 script/source = "extends Node
@@ -38,17 +38,24 @@ var player_name = \"pão brabo\"
 var player_image = preload(\"res://assets/sprites/layout/playerImg.png\")
 var player_cash = 100.0
 
+func adicionar_cash(valor):
+	player_cash += valor 
+	set_player_labels()
+	
+
 # game
 export var ATP = 0
 export var tempo_jogo = 0
 export var quantidade_celulas = 1
 # atp 
+var producao_automatica_atp = false
 var const_atp_produzida = 1.0
 var bunus_atp_produzida =  0
 var tempo_bonus = 0
 var bonus_padrao =  0.0
 
-var multiplicador_atp_click = 2
+var multiplicador_atp_click_inicial = 0.5
+var multiplicador_atp_click = 1
 
 var velocidade_producao_atp = (const_atp_produzida + bunus_atp_produzida) * quantidade_celulas
 
@@ -61,12 +68,18 @@ func subtrair_ATP(valor):
 	ATP = ATP - valor
 
 
+func ativar_producao_automatica_atp():
+	producao_automatica_atp = true
+
+func desativar_producao_automatica_atp():
+	producao_automatica_atp = false
+
 
 func set_velocidade_producao_atp():
 	velocidade_producao_atp = (const_atp_produzida + bunus_atp_produzida) * quantidade_celulas
 
 # celulas 
-var multiplicador_custo_mitose = 4
+var multiplicador_custo_mitose = 5
 var custo_mitose = 1
 var mitoses_realizadas = 0
 var botao_mitose_desabilitado = false
@@ -89,7 +102,7 @@ func set_botao_mitose():
 
 func set_player_labels():
 	$UI/toplabel/PlayerImg.texture = player_image
-	$UI/toplabel/playerName.text = player_name
+	$UI/toplabel/playerName.text = \"Dr. \"+ player_name
 	$UI/toplabel/playerCash.text = str(player_cash)
 
 func set_labels():
@@ -168,14 +181,16 @@ func _ready():
 	set_velocidade_producao_atp()
 	set_custo_mitose()
 	set_labels()
+	desativar_producao_automatica_atp()
+	adicionar_cash(-90)
 	$incrementTimer.start()
 
 
 
 
 func _on_incrementTimer_timeout():
-
-	auto_produce_atp()
+	if producao_automatica_atp:
+		auto_produce_atp()
 	increment_timer()
 "
 
@@ -222,10 +237,11 @@ texture = ExtResource( 28 )
 centered = false
 
 [node name="playerName" type="Label" parent="UI/toplabel"]
-margin_left = 97.4433
-margin_top = 17.3529
+margin_left = 97.443
+margin_top = 15.0
 margin_right = 137.443
-margin_bottom = 31.3529
+margin_bottom = 52.0
+custom_fonts/font = ExtResource( 29 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -236,9 +252,10 @@ anchor_top = 0.5
 anchor_right = 1.0
 anchor_bottom = 0.5
 margin_left = -70.0
-margin_top = -7.0
+margin_top = -11.0
 margin_right = -30.0
-margin_bottom = 7.0
+margin_bottom = 12.0
+custom_fonts/font = ExtResource( 5 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -351,7 +368,7 @@ __meta__ = {
 position = Vector2( -209.321, -51.6294 )
 scale = Vector2( 2.5, 2.5 )
 frames = SubResource( 2 )
-frame = 1
+frame = 3
 playing = true
 centered = false
 
@@ -374,8 +391,6 @@ __meta__ = {
 }
 
 [node name="incrementTimer" type="Timer" parent="."]
-
-[node name="Abertura" parent="." instance=ExtResource( 29 )]
 
 [connection signal="pressed" from="UI/buttons/MitoseButton" to="." method="_on_MitoseButton_pressed"]
 [connection signal="animation_finished" from="UI/Image/celula" to="." method="_on_celula_animation_finished"]
