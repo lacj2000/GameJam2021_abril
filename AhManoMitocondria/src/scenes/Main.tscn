@@ -45,7 +45,7 @@ script/source = "extends Node
 # players
 var player_name = \"Mitosis\"
 var player_image = preload(\"res://assets/sprites/profile/profile.png\")
-var player_cash = 100.0
+var player_cash = 0.0
 
 func adicionar_cash(valor):
 	player_cash += valor 
@@ -58,16 +58,37 @@ export var tempo_jogo = 0
 export var quantidade_celulas = 1
 # atp 
 var producao_automatica_atp = false
-var const_atp_produzida = 1.0
+var const_atp_produzida = 0.5
 var bunus_atp_produzida =  0
 var tempo_bonus = 0
 var bonus_padrao =  0.0
 
-var multiplicador_atp_click_inicial = 0.5
-var multiplicador_atp_click = 1
+var multiplicador_atp_click = 0.5
 
 var velocidade_producao_atp = (const_atp_produzida + bunus_atp_produzida) * quantidade_celulas
 
+func salvar_dados():
+	var arquivo = File.new()
+	var error = arquivo.open(\"user://save.data\",File.WRITE)
+	
+	var data = {
+		\"cash\":player_cash,
+		\"atp\": ATP,
+		\"tempo_jogo\": tempo_jogo,
+		\"celulas\": quantidade_celulas,
+		\"producao_automatica\": producao_automatica_atp,
+		\"constante_producao_automatica\": const_atp_produzida,
+		\"bonus_producao_automatica\": bunus_atp_produzida,
+		\"tempo_bonus\": tempo_bonus,
+		\"apt_click\": multiplicador_atp_click,
+		
+	}
+	
+	if not error:
+		arquivo.store_var(data)
+	else:
+		print(\"Error ao salvar dados\")
+	
 
 func adicionar_ATP(valor):
 	ATP = ATP + valor
@@ -201,6 +222,7 @@ func _on_incrementTimer_timeout():
 	if producao_automatica_atp:
 		auto_produce_atp()
 	increment_timer()
+	salvar_dados()
 "
 
 [sub_resource type="SpriteFrames" id=4]
@@ -281,7 +303,7 @@ __meta__ = {
 position = Vector2( 380, 26 )
 scale = Vector2( 2, 2 )
 frames = SubResource( 4 )
-frame = 4
+frame = 3
 playing = true
 centered = false
 
@@ -393,7 +415,7 @@ __meta__ = {
 position = Vector2( -209.321, -51.6294 )
 scale = Vector2( 2.5, 2.5 )
 frames = SubResource( 2 )
-frame = 7
+frame = 3
 playing = true
 centered = false
 
