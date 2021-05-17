@@ -41,6 +41,9 @@
 
 [sub_resource type="GDScript" id=1]
 script/source = "extends Node
+
+var SAVEFILE = \"user://save.data1\"
+
 	
 # players
 var player_name = \"Mitosis\"
@@ -69,7 +72,7 @@ var velocidade_producao_atp = (const_atp_produzida + bunus_atp_produzida) * quan
 
 func salvar_dados():
 	var arquivo = File.new()
-	var error = arquivo.open(\"user://save.data\",File.WRITE)
+	var error = arquivo.open(SAVEFILE, File.WRITE)
 	
 	var data = {
 		\"cash\":player_cash,
@@ -81,14 +84,36 @@ func salvar_dados():
 		\"bonus_producao_automatica\": bunus_atp_produzida,
 		\"tempo_bonus\": tempo_bonus,
 		\"apt_click\": multiplicador_atp_click,
-		
+		\"mitoses\": mitoses_realizadas,
 	}
 	
 	if not error:
 		arquivo.store_var(data)
 	else:
 		print(\"Error ao salvar dados\")
-	
+
+
+func carregar_dados():
+	var arquivo = File.new()
+	var error = arquivo.open(SAVEFILE, File.READ)
+		
+	if not error:
+		var data = arquivo.get_var()
+		player_cash = data[\"cash\"]
+		ATP = data[\"atp\"]
+		tempo_jogo = data[\"tempo_jogo\"]
+		quantidade_celulas = data[\"celulas\"]
+		producao_automatica_atp = data[\"producao_automatica\"]
+		const_atp_produzida = data[\"constante_producao_automatica\"]
+		bunus_atp_produzida = data[\"bonus_producao_automatica\"]
+		tempo_bonus = data[\"tempo_bonus\"]
+		multiplicador_atp_click = data[\"apt_click\"]
+		mitoses_realizadas = data[\"mitoses\"]
+	else:
+		print(\"Error ao carrergar dados\")
+
+
+
 
 func adicionar_ATP(valor):
 	ATP = ATP + valor
@@ -141,7 +166,10 @@ func set_labels():
 	$UI/labels/ATPLabel.text = \"ATP\\n\" + str(ATP)
 	$UI/labels/mitoseLabel.text = \"Prox. Mitose\\n\" + str(custo_mitose) 
 	$UI/labels/celulasLabel.text = \"Celulas\\n \" + str(quantidade_celulas) 
-	$UI/multiplicadorLabel.text = str(velocidade_producao_atp) + \" ATP/s\"  
+	if producao_automatica_atp:
+		$UI/multiplicadorLabel.text = str(velocidade_producao_atp) + \" ATP/s\"  
+	else:
+		$UI/multiplicadorLabel.text = \"\"  		
 	$UI/buttons/MitoseButton.disabled = botao_mitose_desabilitado
 
 
@@ -184,8 +212,8 @@ func meiose():
 	quantidade_celulas = quantidade_celulas * 2
 	set_labels()
 
+
 func start_mitose():
-	
 	$UI/buttons/MitoseButton.disabled = true
 	$UI/Image/TextureButton.hide()
 	$UI/Image/celula.visible = true
@@ -206,13 +234,12 @@ func _on_celula_animation_finished():
 
 
 func _ready():
+	desativar_producao_automatica_atp()
 	stop_mitose()
+	carregar_dados()
 	set_player_labels()
-	set_velocidade_producao_atp()
 	set_custo_mitose()
 	set_labels()
-	desativar_producao_automatica_atp()
-	adicionar_cash(-90)
 	$incrementTimer.start()
 
 
@@ -415,7 +442,7 @@ __meta__ = {
 position = Vector2( -209.321, -51.6294 )
 scale = Vector2( 2.5, 2.5 )
 frames = SubResource( 2 )
-frame = 3
+frame = 5
 playing = true
 centered = false
 
