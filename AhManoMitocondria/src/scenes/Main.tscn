@@ -1,4 +1,4 @@
-[gd_scene load_steps=32 format=2]
+[gd_scene load_steps=33 format=2]
 
 [ext_resource path="res://assets/sprites/celula_parada/untitled_1.png" type="Texture" id=1]
 [ext_resource path="res://assets/sprites/celula_parada/untitled_5.png" type="Texture" id=2]
@@ -28,10 +28,11 @@
 [ext_resource path="res://assets/sprites/celula_meiose/celula_meiose_14.png" type="Texture" id=26]
 [ext_resource path="res://assets/sprites/mitosis/mitosis_button_2_1.png" type="Texture" id=27]
 [ext_resource path="res://assets/sprites/layout/playerImg.png" type="Texture" id=28]
+[ext_resource path="res://src/scenes/Abertura.tscn" type="PackedScene" id=29]
 
 [sub_resource type="GDScript" id=1]
 script/source = "extends Node
-
+	
 # players
 var player_name = \"pão brabo\"
 var player_image = preload(\"res://assets/sprites/layout/playerImg.png\")
@@ -162,7 +163,6 @@ func _on_celula_animation_finished():
 
 
 func _ready():
-	
 	stop_mitose()
 	set_player_labels()
 	set_velocidade_producao_atp()
@@ -351,7 +351,7 @@ __meta__ = {
 position = Vector2( -209.321, -51.6294 )
 scale = Vector2( 2.5, 2.5 )
 frames = SubResource( 2 )
-frame = 7
+frame = 1
 playing = true
 centered = false
 
@@ -374,6 +374,8 @@ __meta__ = {
 }
 
 [node name="incrementTimer" type="Timer" parent="."]
+
+[node name="Abertura" parent="." instance=ExtResource( 29 )]
 
 [connection signal="pressed" from="UI/buttons/MitoseButton" to="." method="_on_MitoseButton_pressed"]
 [connection signal="animation_finished" from="UI/Image/celula" to="." method="_on_celula_animation_finished"]
