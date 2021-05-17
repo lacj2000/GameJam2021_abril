@@ -1,4 +1,4 @@
-[gd_scene load_steps=33 format=2]
+[gd_scene load_steps=43 format=2]
 
 [ext_resource path="res://assets/sprites/celula_parada/untitled_1.png" type="Texture" id=1]
 [ext_resource path="res://assets/sprites/celula_parada/untitled_5.png" type="Texture" id=2]
@@ -27,15 +27,24 @@
 [ext_resource path="res://assets/sprites/celula_meiose/celula_meiose_16.png" type="Texture" id=25]
 [ext_resource path="res://assets/sprites/celula_meiose/celula_meiose_14.png" type="Texture" id=26]
 [ext_resource path="res://assets/sprites/mitosis/mitosis_button_2_1.png" type="Texture" id=27]
-[ext_resource path="res://assets/sprites/layout/playerImg.png" type="Texture" id=28]
+[ext_resource path="res://assets/sprites/profile/profile.png" type="Texture" id=28]
 [ext_resource path="res://fonts/MotionControl-Bold-25-name.tres" type="DynamicFont" id=29]
+[ext_resource path="res://assets/sprites/coin/coin_6.png" type="Texture" id=30]
+[ext_resource path="res://assets/sprites/coin/coin_8.png" type="Texture" id=31]
+[ext_resource path="res://assets/sprites/coin/coin_7.png" type="Texture" id=32]
+[ext_resource path="res://assets/sprites/coin/coin_9.png" type="Texture" id=33]
+[ext_resource path="res://assets/sprites/coin/coin_4.png" type="Texture" id=34]
+[ext_resource path="res://assets/sprites/coin/coin_5.png" type="Texture" id=35]
+[ext_resource path="res://assets/sprites/coin/coin_1.png" type="Texture" id=36]
+[ext_resource path="res://assets/sprites/coin/coin_3.png" type="Texture" id=37]
+[ext_resource path="res://assets/sprites/coin/coin_2.png" type="Texture" id=38]
 
 [sub_resource type="GDScript" id=1]
 script/source = "extends Node
 	
 # players
-var player_name = \"pão brabo\"
-var player_image = preload(\"res://assets/sprites/layout/playerImg.png\")
+var player_name = \"Mitosis\"
+var player_image = preload(\"res://assets/sprites/profile/profile.png\")
 var player_cash = 100.0
 
 func adicionar_cash(valor):
@@ -194,6 +203,14 @@ func _on_incrementTimer_timeout():
 	increment_timer()
 "
 
+[sub_resource type="SpriteFrames" id=4]
+animations = [ {
+"frames": [ ExtResource( 36 ), ExtResource( 38 ), ExtResource( 37 ), ExtResource( 34 ), ExtResource( 35 ), ExtResource( 30 ), ExtResource( 32 ), ExtResource( 31 ), ExtResource( 33 ) ],
+"loop": true,
+"name": "default",
+"speed": 4.5
+} ]
+
 [sub_resource type="SpriteFrames" id=2]
 animations = [ {
 "frames": [ ExtResource( 14 ), ExtResource( 17 ), ExtResource( 19 ), ExtResource( 18 ), ExtResource( 16 ), ExtResource( 20 ), ExtResource( 21 ), ExtResource( 15 ), ExtResource( 22 ), ExtResource( 13 ), ExtResource( 11 ), ExtResource( 12 ), ExtResource( 24 ), ExtResource( 26 ), ExtResource( 23 ), ExtResource( 25 ) ],
@@ -251,14 +268,22 @@ anchor_left = 1.0
 anchor_top = 0.5
 anchor_right = 1.0
 anchor_bottom = 0.5
-margin_left = -70.0
+margin_left = -65.0
 margin_top = -11.0
-margin_right = -30.0
+margin_right = -25.0
 margin_bottom = 12.0
 custom_fonts/font = ExtResource( 5 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[node name="AnimatedSprite" type="AnimatedSprite" parent="UI/toplabel"]
+position = Vector2( 380, 26 )
+scale = Vector2( 2, 2 )
+frames = SubResource( 4 )
+frame = 4
+playing = true
+centered = false
 
 [node name="multiplicadorLabel" type="Label" parent="UI"]
 anchor_right = 1.0
@@ -368,7 +393,7 @@ __meta__ = {
 position = Vector2( -209.321, -51.6294 )
 scale = Vector2( 2.5, 2.5 )
 frames = SubResource( 2 )
-frame = 1
+frame = 7
 playing = true
 centered = false
 
