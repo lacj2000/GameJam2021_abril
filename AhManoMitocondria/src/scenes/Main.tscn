@@ -54,6 +54,10 @@ func adicionar_cash(valor):
 	player_cash += valor 
 	set_player_labels()
 	
+func checkPopupATP(atp):
+	#if achievements['atp'][atp]:
+		#$UI/AcceptDialog.text = achievements['atp'][atp][0]
+	$UI/AcceptDialog.popup()
 
 # game
 export var ATP = 0
@@ -117,6 +121,7 @@ func carregar_dados():
 
 func adicionar_ATP(valor):
 	ATP = ATP + valor
+	checkPopupATP(ATP)
 
 
 func subtrair_ATP(valor):
@@ -178,7 +183,7 @@ func auto_produce_atp():
 		bunus_atp_produzida = bonus_padrao
 	if (tempo_bonus > 0):
 		tempo_bonus -= 1 
-	ATP += quantidade_celulas * (const_atp_produzida + bunus_atp_produzida)
+	adicionar_ATP(quantidade_celulas * (const_atp_produzida + bunus_atp_produzida))
 
 func click_produce_atp():
 	adicionar_ATP(quantidade_celulas * multiplicador_atp_click)
@@ -222,6 +227,7 @@ func start_mitose():
 
 
 func _on_MitoseButton_pressed():
+
 	decrementar_custo_mitose()
 	start_mitose()
 		
@@ -236,10 +242,11 @@ func _on_celula_animation_finished():
 func _ready():
 	desativar_producao_automatica_atp()
 	stop_mitose()
-	carregar_dados()
+	#carregar_dados()
 	set_player_labels()
 	set_custo_mitose()
 	set_labels()
+	print(jsonA[\"atp\"])
 	$incrementTimer.start()
 
 
@@ -286,6 +293,10 @@ frame_6/delay_sec = 0.0
 
 [node name="Main" type="Node"]
 script = SubResource( 1 )
+SAVEFILE = null
+ATP = null
+tempo_jogo = null
+quantidade_celulas = null
 
 [node name="UI" type="CanvasLayer" parent="."]
 
@@ -330,7 +341,7 @@ __meta__ = {
 position = Vector2( 380, 26 )
 scale = Vector2( 2, 2 )
 frames = SubResource( 2 )
-frame = 2
+frame = 3
 playing = true
 centered = false
 
@@ -442,6 +453,7 @@ __meta__ = {
 position = Vector2( -209.321, -51.6294 )
 scale = Vector2( 2.5, 2.5 )
 frames = SubResource( 3 )
+frame = 1
 playing = true
 centered = false
 
@@ -462,6 +474,18 @@ texture_normal = SubResource( 4 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[node name="AcceptDialog" type="AcceptDialog" parent="UI"]
+visible = true
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -146.885
+margin_top = -350.685
+margin_right = 174.115
+margin_bottom = -249.685
+window_title = "Realização concluída!"
 
 [node name="incrementTimer" type="Timer" parent="."]
 
