@@ -42,8 +42,9 @@
 [sub_resource type="GDScript" id=1]
 script/source = "extends Node
 
-var SAVEFILE = \"user://save.data1\"
+export var SAVEFILE = \"user://save.data1\"
 
+var language = 0
 	
 # players
 var player_name = \"Mitosis\"
@@ -54,6 +55,11 @@ func adicionar_cash(valor):
 	player_cash += valor 
 	set_player_labels()
 	
+func checkPopupATP(atp):
+	#if achievements['atp'][atp]:	
+		#$UI/AcceptDialog.text = achievements['atp'][atp][0]
+	if 0:
+		$UI/AcceptDialog.popup()
 
 # game
 export var ATP = 0
@@ -117,6 +123,7 @@ func carregar_dados():
 
 func adicionar_ATP(valor):
 	ATP = ATP + valor
+	checkPopupATP(ATP)
 
 
 func subtrair_ATP(valor):
@@ -178,7 +185,7 @@ func auto_produce_atp():
 		bunus_atp_produzida = bonus_padrao
 	if (tempo_bonus > 0):
 		tempo_bonus -= 1 
-	ATP += quantidade_celulas * (const_atp_produzida + bunus_atp_produzida)
+	adicionar_ATP(quantidade_celulas * (const_atp_produzida + bunus_atp_produzida))
 
 func click_produce_atp():
 	adicionar_ATP(quantidade_celulas * multiplicador_atp_click)
@@ -222,6 +229,7 @@ func start_mitose():
 
 
 func _on_MitoseButton_pressed():
+
 	decrementar_custo_mitose()
 	start_mitose()
 		
@@ -236,7 +244,7 @@ func _on_celula_animation_finished():
 func _ready():
 	desativar_producao_automatica_atp()
 	stop_mitose()
-	carregar_dados()
+	#carregar_dados()
 	set_player_labels()
 	set_custo_mitose()
 	set_labels()
@@ -252,7 +260,7 @@ func _on_incrementTimer_timeout():
 	salvar_dados()
 "
 
-[sub_resource type="SpriteFrames" id=4]
+[sub_resource type="SpriteFrames" id=2]
 animations = [ {
 "frames": [ ExtResource( 36 ), ExtResource( 38 ), ExtResource( 37 ), ExtResource( 34 ), ExtResource( 35 ), ExtResource( 30 ), ExtResource( 32 ), ExtResource( 31 ), ExtResource( 33 ) ],
 "loop": true,
@@ -260,7 +268,7 @@ animations = [ {
 "speed": 4.5
 } ]
 
-[sub_resource type="SpriteFrames" id=2]
+[sub_resource type="SpriteFrames" id=3]
 animations = [ {
 "frames": [ ExtResource( 14 ), ExtResource( 17 ), ExtResource( 19 ), ExtResource( 18 ), ExtResource( 16 ), ExtResource( 20 ), ExtResource( 21 ), ExtResource( 15 ), ExtResource( 22 ), ExtResource( 13 ), ExtResource( 11 ), ExtResource( 12 ), ExtResource( 24 ), ExtResource( 26 ), ExtResource( 23 ), ExtResource( 25 ) ],
 "loop": true,
@@ -268,7 +276,7 @@ animations = [ {
 "speed": 7.0
 } ]
 
-[sub_resource type="AnimatedTexture" id=3]
+[sub_resource type="AnimatedTexture" id=4]
 frames = 7
 frame_0/texture = ExtResource( 1 )
 frame_1/texture = ExtResource( 4 )
@@ -329,8 +337,8 @@ __meta__ = {
 [node name="AnimatedSprite" type="AnimatedSprite" parent="UI/toplabel"]
 position = Vector2( 380, 26 )
 scale = Vector2( 2, 2 )
-frames = SubResource( 4 )
-frame = 4
+frames = SubResource( 2 )
+frame = 6
 playing = true
 centered = false
 
@@ -441,8 +449,8 @@ __meta__ = {
 [node name="celula" type="AnimatedSprite" parent="UI/Image"]
 position = Vector2( -209.321, -51.6294 )
 scale = Vector2( 2.5, 2.5 )
-frames = SubResource( 2 )
-frame = 11
+frames = SubResource( 3 )
+frame = 7
 playing = true
 centered = false
 
@@ -459,10 +467,22 @@ grow_horizontal = 0
 grow_vertical = 0
 rect_scale = Vector2( 2.5, 2.5 )
 shortcut_in_tooltip = false
-texture_normal = SubResource( 3 )
+texture_normal = SubResource( 4 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[node name="AcceptDialog" type="AcceptDialog" parent="UI"]
+visible = true
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -146.885
+margin_top = -350.685
+margin_right = 174.115
+margin_bottom = -249.685
+window_title = "Realização concluída!"
 
 [node name="incrementTimer" type="Timer" parent="."]
 

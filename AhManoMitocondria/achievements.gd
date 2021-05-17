@@ -2,8 +2,8 @@ const strings = preload("res://strings.gd")
 
 var achievements = {
 	"atp": {
-		1: strings["achievement_0001"]},
-		10 strings["achievement_0002"],
+		1: strings["achievement_0001"],
+		10: strings["achievement_0002"],
 		100: strings["achievement_0003"],
 		1000: strings["achievement_0004"],
 		10000: strings["achievement_0005"],
